@@ -7,7 +7,7 @@ import com.webapp.model.Resume;
  */
 public class ArrayStorage {
     private int size = 0;
-    private final Resume[] storage = new Resume[10000];
+    private final Resume[] storage = new Resume[10_000];
 
     public void clear() {
         for (int i = 0; i < size; i++) {
@@ -17,21 +17,23 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-        if (size < storage.length) {
-            if (!isAResume(r.getUuid())) {
+        int index = resumeLocate(r.getUuid());
+        if (index < 0) {
+            if (size < storage.length) {
                 storage[size] = r;
                 size++;
-            } else System.out.println("Рузюме " + r.getUuid() + " уже есть в хранилище!");
-        } else System.out.println("Хранилище переполненно!");
+            } else {
+                System.out.println("Хранилище переполненно!");
+            }
+        } else {
+            System.out.println("Рузюме " + r.getUuid() + " уже есть в хранилище!");
+        }
     }
 
     public Resume get(String uuid) {
-        if (isAResume(uuid)) {
-            for (int i = 0; i < size; i++) {
-                if (uuid.equals(storage[i].getUuid())) {
-                    return storage[i];
-                }
-            }
+        int index = resumeLocate(uuid);
+        if (index >= 0) {
+            return storage[index];
         }
         System.out.println("Резюме " + uuid + " нет в хранилище!");
         return null;
@@ -39,15 +41,11 @@ public class ArrayStorage {
 
 
     public void delete(String uuid) {
-        if (isAResume(uuid)) {
-            for (int i = 0; i < size; i++) {
-                if (uuid.equals(storage[i].getUuid())) {
-                    storage[i] = storage[size - 1];
-                    storage[size - 1] = null;
-                    size--;
-                    break;
-                }
-            }
+        int index = resumeLocate(uuid);
+        if (index >= 0) {
+            storage[index] = storage[size - 1];
+            storage[size - 1] = null;
+            size--;
         } else {
             System.out.println("Резюме " + uuid + " нет в хранилище!");
         }
@@ -58,9 +56,7 @@ public class ArrayStorage {
      */
     public Resume[] getAll() {
         Resume[] resumes = new Resume[size];
-        for (int i = 0; i < size; i++) {
-            resumes[i] = storage[i];
-        }
+        System.arraycopy(storage, 0, resumes, 0, size);
         return resumes;
     }
 
@@ -69,19 +65,22 @@ public class ArrayStorage {
     }
 
     public void update(Resume r) {
-        if (isAResume(r.getUuid())) {
-            System.out.println(r.getUuid());
+        int index = resumeLocate(r.getUuid());
+        if (index >= 0) {
+            storage[index] = r;
+            System.out.println("Резюме " + r.getUuid() + " обновлено!");
         } else {
             System.out.println("Резюме " + r.getUuid() + " нет в хранилище!");
         }
     }
 
-    private boolean isAResume(String uuide) {
+
+    private int resumeLocate(String uuid) {
         for (int i = 0; i < size; i++) {
-            if (uuide.equals(storage[i].getUuid())) {
-                return true;
+            if (uuid.equals(storage[i].getUuid())) {
+                return i;
             }
         }
-        return false;
+        return -1;
     }
 }

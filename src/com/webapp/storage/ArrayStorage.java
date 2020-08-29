@@ -5,7 +5,7 @@ import com.webapp.model.Resume;
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage extends AbstractArrayStorage{
+public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected int findIndex(String uuid) {
@@ -18,7 +18,7 @@ public class ArrayStorage extends AbstractArrayStorage{
     }
 
     @Override
-    protected void saveIndex(Resume resume, int index) {
+    protected void saveResume(Resume resume, int index) {
         storage[size] = resume;
     }
 

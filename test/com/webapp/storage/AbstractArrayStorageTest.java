@@ -1,6 +1,7 @@
 package com.webapp.storage;
 
 import com.webapp.exception.NotExistStorageException;
+import com.webapp.exception.StorageException;
 import com.webapp.model.Resume;
 import org.junit.Assert;
 import org.junit.Before;
@@ -8,7 +9,7 @@ import org.junit.Test;
 
 
 public abstract class AbstractArrayStorageTest {
-    protected Storage storage;
+    Storage storage;
 
     private static final String UUID1 = "uuid1";
     private static final Resume RESUME1 = new Resume(UUID1);
@@ -39,18 +40,17 @@ public abstract class AbstractArrayStorageTest {
     public void clear() {
         storage.clear();
         Assert.assertEquals(0, storage.size());
-
     }
 
     @Test
     public void update() {
         storage.update(RESUME1);
-        Assert.assertEquals(RESUME1, storage.get("uuid1"));
+        Assert.assertEquals(RESUME1, storage.get(UUID1));
     }
 
     @Test
     public void get() {
-        Assert.assertEquals(RESUME1, storage.get("uuid1"));
+        Assert.assertEquals(RESUME1, storage.get(UUID1));
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -81,7 +81,14 @@ public abstract class AbstractArrayStorageTest {
 
     @Test(expected = NotExistStorageException.class)
     public void delete() {
-        storage.delete("uuid4");
-        Assert.assertEquals("uuid4", storage.get("uuid4").toString());
+        storage.delete(UUID4);
+        storage.get(UUID4);
+    }
+
+    @Test(expected = StorageException.class)
+    public void saveOverflow() {
+        for (int i = 4; i <= storage.size(); i++) {
+            storage.save(new Resume());
+        }
     }
 }

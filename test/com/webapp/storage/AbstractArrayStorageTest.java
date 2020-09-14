@@ -60,11 +60,11 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void getAll() {
-        Resume[] resume = storage.getAll();
-        Assert.assertEquals(RESUME1, resume[0]);
-        Assert.assertEquals(RESUME2, resume[1]);
-        Assert.assertEquals(RESUME3, resume[2]);
-        Assert.assertEquals(RESUME4, resume[3]);
+        Resume[] resumes = storage.getAll();
+        Assert.assertEquals(RESUME1, resumes[0]);
+        Assert.assertEquals(RESUME2, resumes[1]);
+        Assert.assertEquals(RESUME3, resumes[2]);
+        Assert.assertEquals(RESUME4, resumes[3]);
     }
 
     @Test
@@ -79,6 +79,12 @@ public abstract class AbstractArrayStorageTest {
         Assert.assertNotNull(storage);
     }
 
+    @Test
+    public void save2() {
+        storage.save(new Resume());
+        Assert.assertEquals(5,storage.size());
+    }
+
     @Test(expected = NotExistStorageException.class)
     public void delete() {
         storage.delete(UUID4);
@@ -87,8 +93,13 @@ public abstract class AbstractArrayStorageTest {
 
     @Test(expected = StorageException.class)
     public void saveOverflow() {
-        for (int i = 1; i <= AbstractArrayStorage.STORAGE_LIMIT; i++) {
-            storage.save(new Resume());
+        try {
+            for (int i = 4; i < AbstractArrayStorage.STORAGE_LIMIT; i++) {
+                storage.save(new Resume());
+            }
+        }catch (StorageException e){
+            Assert.fail("тест не пройден");
         }
+        storage.save(new Resume());
     }
 }

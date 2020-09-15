@@ -91,6 +91,11 @@ public abstract class AbstractArrayStorageTest {
         storage.get(UUID4);
     }
 
+    @Test(expected = NotExistStorageException.class)
+    public void deleteNotExist() {
+        storage.delete("Dummy");
+    }
+
     @Test(expected = StorageException.class)
     public void saveOverflow() {
         try {

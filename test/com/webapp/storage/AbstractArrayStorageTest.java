@@ -85,7 +85,7 @@ public abstract class AbstractArrayStorageTest {
     }
 
     @Test
-    public void save2() {
+    public void saveExist () {
         storage.save(new Resume());
         Assert.assertEquals(5,storage.size());
     }
